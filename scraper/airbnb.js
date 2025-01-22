@@ -47,9 +47,9 @@ const extractTitle = async (page, selector) => {
 const scraperBaseSourceAirbnb = async (_url) => {
     const url = _url.includes('://') ? _url.split('?')[0] : `https://${_url.split('?')[0]}`;
     const browser = await puppeteer.launch({
-        headless: true,
+        headless: false,
         args: ['--window-size=1600,1000', '--no-sandbox', '--disable-setuid-sandbox', '--disable-gpu'],
-        devtools: false,
+        devtools: true,
     });
     let page;
 
