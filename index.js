@@ -42,7 +42,6 @@ app.post('/search', async (req, res) => {
         scrapedBaseData = BaseData.scrapedData;
         filterOptions = BaseData.filterOptions;
         googleLensSearchResult = await getGoogleLensSearchData(scrapedBaseData.result.image_urls);
-        console.log(googleLensSearchResult)
         let scrapedData = [];
         let restData = [];
         if (googleLensSearchResult.status) {
