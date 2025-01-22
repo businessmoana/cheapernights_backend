@@ -32,7 +32,6 @@ const extractJson = async (page) => {
         const jsonStr = await page.$eval('script[type="application/ld+json"]', (e) => e.innerText);
         // await page.setJavaScriptEnabled(true);
         const data = JSON.parse(jsonStr);
-
         return {
             source:'Booking.com',
             // address: data.address || 'N/A',
@@ -66,7 +65,7 @@ const scraperSourceBooking = async (_url) => {
     try {
         console.log('Booking Scrapping Start!');
         page = await browser.newPage();
-        await page.setViewport({ width: 1600, height: 700 });
+        await page.setViewport({ width: 1600, height: 1000 });
         page.setDefaultNavigationTimeout(0);
         await page.goto(_url, { waitUntil: 'networkidle2' });
 
