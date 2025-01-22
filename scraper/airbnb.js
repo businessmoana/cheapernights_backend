@@ -56,8 +56,8 @@ const scraperBaseSourceAirbnb = async (_url) => {
     try {
         console.log('Airbnb Scrapping Start!');
         page = await browser.newPage();
-        await page.setViewport({ width: 900, height: 500 });
-        await page.setDefaultNavigationTimeout(0);
+        await page.setViewport({ width: 1600, height: 700 });
+        page.setDefaultNavigationTimeout(0);
         await page.goto(_url, { waitUntil: 'networkidle2' });
 
         const json = {
