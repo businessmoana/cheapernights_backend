@@ -26,9 +26,9 @@ const extractImagesUrl = async (page) => {
 
 const scraperVrbo = async (_url) => {
     const browser = await puppeteer.launch({
-        headless: false,
+        headless: true,
         args: ['--window-size=1600,1000', '--no-sandbox', '--disable-setuid-sandbox', '--disable-gpu'],
-        devtools: true,
+        devtools: false,
     });
     let page;
 
