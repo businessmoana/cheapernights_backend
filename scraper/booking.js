@@ -81,7 +81,7 @@ const scraperSourceBooking = async (_url) => {
                 page,
                 'tr.hprt-table-cheapest-block td.hprt-table-cell-price div div.bui-price-display div.bui-price-display__value span:nth-child(1)',
             ),
-            image_urls: await extractImagesUrl(page,'div#photo_wrapper div div:nth-child(1) img'),
+            image_urls: await extractImagesUrl(page,'div#photo_wrapper img'),
             link:_url
 
         };
