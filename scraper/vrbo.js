@@ -46,9 +46,9 @@ const extractTitle = async (page, selector) => {
 
 const scraperSourceVrbo = async (_url) => {
     const browser = await puppeteer.launch({
-        headless: true,
+        headless: false,
         args: ['--window-size=1600,1000', '--no-sandbox', '--disable-setuid-sandbox', '--disable-gpu'],
-        devtools: false,
+        // devtools: false,
     });
     let page;
 
