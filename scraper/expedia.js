@@ -26,7 +26,7 @@ const extractImagesUrl = async (page) => {
 
 const extractPrice = async (page, selector) => {
     try {
-        await retrySelector(page, selector);
+        // await retrySelector(page, selector);
         return await page.$eval(selector, (e) => e.innerText);
     } catch (e) {
         console.error('Error extracting Price url:', e.message);
@@ -36,7 +36,7 @@ const extractPrice = async (page, selector) => {
 
 const extractTitle = async (page, selector) => {
     try {
-        await retrySelector(page, selector);
+        // await retrySelector(page, selector);
         return await page.$eval(selector, (e) => e.innerText);
     } catch (e) {
         console.error('Error extracting Title:', e.message);
