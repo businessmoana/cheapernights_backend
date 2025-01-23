@@ -46,7 +46,7 @@ const extractJson = async (page) => {
 
 const extractPrice = async (page, selector) => {
     try {
-        await retrySelector(page, selector);
+        // await retrySelector(page, selector);
         const elementHTML = await page.evaluate((selector) => {
             const element = document.querySelector(selector);
             return element ? element.outerHTML : null; // Return outer HTML
