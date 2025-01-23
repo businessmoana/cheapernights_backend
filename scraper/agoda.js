@@ -25,7 +25,7 @@ const extractPrice = async (page, selectors) => {
     const results = [];
     try {
         for (const selector of selectors) {
-            await retrySelector(page, selector);
+            // await retrySelector(page, selector);
             const value = await page.$eval(selector, (e) => e.innerText);
             results.push(value.trim());
         }
@@ -38,7 +38,7 @@ const extractPrice = async (page, selectors) => {
 
 const extractTitle = async (page, selector) => {
     try {
-        await retrySelector(page, selector);
+        // await retrySelector(page, selector);
         return await page.$eval(selector, (e) => e.innerText);
     } catch (e) {
         console.error('Error extracting Title:', e.message);
