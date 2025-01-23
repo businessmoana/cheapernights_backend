@@ -65,7 +65,7 @@ const scraperSourceBooking = async (_url) => {
     const browser = await puppeteer.launch({
         headless: false,
         args: ['--window-size=1600,1000', '--no-sandbox', '--disable-setuid-sandbox', '--disable-gpu'],
-        devtools: true,
+        // devtools: true,
     });
     let page;
 
