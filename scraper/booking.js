@@ -46,14 +46,15 @@ const extractJson = async (page) => {
 
 const extractPrice = async (page, selector) => {
     try {
-        // await retrySelector(page, selector);
+        await retrySelector(page, selector);
         const elementHTML = await page.evaluate((selector) => {
             const element = document.querySelector(selector);
             return element ? element.outerHTML : null; // Return outer HTML
         }, selector);
 
         console.log("Selected Element HTML:", elementHTML);
-        return await page.$eval(selector, (e) => e.innerText);
+        // return await page.$eval(selector, (e) => e.innerText);
+        return 0
     } catch (e) {
         console.error(`Error extracting price:`, e.message);
         return '';
@@ -79,7 +80,7 @@ const scraperSourceBooking = async (_url) => {
             ...(await extractJson(page)),
             price: await extractPrice(
                 page,
-                'tr.hprt-table-cheapest-block td.hprt-table-cell-price div div.bui-price-display div.bui-price-display__value span:nth-child(1)',
+                'hprt-container',
             ),
             image_urls: await extractImagesUrl(page,'div#photo_wrapper div div:nth-child(1) img'),
             link:_url
