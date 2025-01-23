@@ -47,6 +47,12 @@ const extractJson = async (page) => {
 const extractPrice = async (page, selector) => {
     try {
         await retrySelector(page, selector);
+        const elementHTML = await page.evaluate((selector) => {
+            const element = document.querySelector(selector);
+            return element ? element.outerHTML : null; // Return outer HTML
+        }, selector);
+
+        console.log("Selected Element HTML:", elementHTML);
         return await page.$eval(selector, (e) => e.innerText);
     } catch (e) {
         console.error(`Error extracting price:`, e.message);
