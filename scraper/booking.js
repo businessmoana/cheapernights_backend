@@ -53,8 +53,7 @@ const extractPrice = async (page, selector) => {
         }, selector);
 
         console.log("Selected Element HTML:", elementHTML);
-        // return await page.$eval(selector, (e) => e.innerText);
-        return 0
+        return await page.$eval(selector, (e) => e.innerText);
     } catch (e) {
         console.error(`Error extracting price:`, e.message);
         return '';
