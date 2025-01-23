@@ -80,7 +80,7 @@ const scraperSourceBooking = async (_url) => {
             ...(await extractJson(page)),
             price: await extractPrice(
                 page,
-                'hprt-container',
+                '.hprt-container',
             ),
             image_urls: await extractImagesUrl(page,'div#photo_wrapper div div:nth-child(1) img'),
             link:_url
