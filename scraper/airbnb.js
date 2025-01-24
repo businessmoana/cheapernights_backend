@@ -14,7 +14,7 @@ const retrySelector = async (page, selector, retries = 3) => {
 
 const extractImagesUrl = async (page) => {
     try {
-        const imageUrls = await page.$$eval('div[data-testid="photo-viewer-section"] img', (e) =>
+        const imageUrls = await page.$$eval('div[data-section-id*="HERO_"] img', (e) =>
             e.map((item) => item.getAttribute('src')),
         );
         // console.log("imageUrls=>",imageUrls)
@@ -57,8 +57,8 @@ const getButtonByText = async (page, text) => {
 };
 
 const scraperBaseSourceAirbnb = async (_url) => {
-    const url = new URL(_url);
-    url.searchParams.append('modal','PHOTO_TOUR_SCROLLABLE')
+    // const url = new URL(_url);
+    // url.searchParams.append('modal','PHOTO_TOUR_SCROLLABLE')
     const browser = await puppeteer.launch({
         headless: false,
         args: ['--window-size=1600,1000', '--no-sandbox', '--disable-setuid-sandbox', '--disable-gpu'],
@@ -71,7 +71,7 @@ const scraperBaseSourceAirbnb = async (_url) => {
         page = await browser.newPage();
         await page.setViewport({ width: 1600, height: 1000 });
         page.setDefaultNavigationTimeout(0);
-        await page.goto(url, { waitUntil: 'networkidle2' });
+        await page.goto(_url, { waitUntil: 'networkidle2' });
 
         const json = {
             source: 'Airbnb',
