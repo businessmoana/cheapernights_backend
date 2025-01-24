@@ -17,8 +17,11 @@ const extractImagesUrl = async (page, selector) => {
     try {
         await retrySelector(page, selector);
         const images = await page.$$eval(selector, (elements) => {
-            return elements.map((item) => item.getAttribute('src'));
+            return elements
+                .map((item) => item.getAttribute('src')) // Get the 'src' attributes
+                .filter(src => src !== null && src !== ''); // Filter out null and empty strings
         });
+        // console.log("images=>", images);
         return images;
     } catch (e) {
         console.error('Error extracting images url:', e.message);
@@ -33,7 +36,7 @@ const extractJson = async (page) => {
         // await page.setJavaScriptEnabled(true);
         const data = JSON.parse(jsonStr);
         return {
-            source:'Booking.com',
+            source: 'Booking.com',
             // address: data.address || 'N/A',
             // image_urls: [data.image],
             name: data.name || 'N/A',
@@ -61,6 +64,8 @@ const extractPrice = async (page, selector) => {
 };
 
 const scraperSourceBooking = async (_url) => {
+    const url = new URL(_url);
+    url.searchParams.append('activeTab', 'photosGallery')
     const browser = await puppeteer.launch({
         headless: false,
         args: ['--window-size=1600,1000', '--no-sandbox', '--disable-setuid-sandbox', '--disable-gpu'],
@@ -73,16 +78,15 @@ const scraperSourceBooking = async (_url) => {
         page = await browser.newPage();
         await page.setViewport({ width: 1600, height: 1000 });
         page.setDefaultNavigationTimeout(0);
-        await page.goto(_url, { waitUntil: 'networkidle2' });
-
+        await page.goto(url, { waitUntil: 'networkidle2' });
         const json = {
             ...(await extractJson(page)),
             price: await extractPrice(
                 page,
                 'tr.hprt-table-cheapest-block td.hprt-table-cell-price div div.bui-price-display div.bui-price-display__value span:nth-child(1)',
             ),
-            image_urls: await extractImagesUrl(page,'div#photo_wrapper img'),
-            link:_url
+            image_urls: await extractImagesUrl(page, 'div.bh-photo-modal-thumbs-grid img'),
+            link: _url
 
         };
 

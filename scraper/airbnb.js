@@ -14,10 +14,11 @@ const retrySelector = async (page, selector, retries = 3) => {
 
 const extractImagesUrl = async (page) => {
     try {
-        return await page.$$eval('div[data-section-id*="HERO_"] img', (e) =>
-            e.map((item) => item.getAttribute('src').replace('im_w=720', 'im_w=1200'))
-                .filter((item) => item.includes('im_w=1200')),
+        const imageUrls = await page.$$eval('div[data-testid="photo-viewer-section"] img', (e) =>
+            e.map((item) => item.getAttribute('src')),
         );
+        // console.log("imageUrls=>",imageUrls)
+        return imageUrls
     } catch (e) {
         console.error('Error extracting images url:', e.message);
         return [];
@@ -44,8 +45,20 @@ const extractTitle = async (page, selector) => {
     }
 };
 
+const getButtonByText = async (page, text) => {
+    const buttonHandle = await page.evaluateHandle((text) => {
+        const buttons = Array.from(document.querySelectorAll('button'));
+        return buttons.find(button => {
+            const innerText = button.querySelector('div > div')?.innerText;
+            return innerText === text;
+        });
+    }, text);
+    return buttonHandle;
+};
+
 const scraperBaseSourceAirbnb = async (_url) => {
-    const url = _url.includes('://') ? _url.split('?')[0] : `https://${_url.split('?')[0]}`;
+    const url = new URL(_url);
+    url.searchParams.append('modal','PHOTO_TOUR_SCROLLABLE')
     const browser = await puppeteer.launch({
         headless: false,
         args: ['--window-size=1600,1000', '--no-sandbox', '--disable-setuid-sandbox', '--disable-gpu'],
@@ -58,10 +71,10 @@ const scraperBaseSourceAirbnb = async (_url) => {
         page = await browser.newPage();
         await page.setViewport({ width: 1600, height: 1000 });
         page.setDefaultNavigationTimeout(0);
-        await page.goto(_url, { waitUntil: 'networkidle2' });
+        await page.goto(url, { waitUntil: 'networkidle2' });
 
         const json = {
-            source:'Airbnb',
+            source: 'Airbnb',
             name: await extractTitle(page, 'h1.hpipapi'),
             image_urls: await extractImagesUrl(page),
             price: await extractPrice(page, 'main#site-content div[data-section-id="BOOK_IT_SIDEBAR"] section span._j1kt73'),

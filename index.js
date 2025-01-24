@@ -141,8 +141,8 @@ const getBaseData = async (searchText) => {
 
         const [count, ...ages] = searchUrl.searchParams.get('children') ? searchUrl.searchParams.get('children').split('_') : "";
         filterOptions = {
-            checkIn: searchUrl.searchParams.get('chkin'),
-            checkOut: searchUrl.searchParams.get('chkout'),
+            checkIn: searchUrl.searchParams.get('startDate'),
+            checkOut: searchUrl.searchParams.get('endDate'),
             adults: searchUrl.searchParams.get('adults'),
             children: count,
         }
