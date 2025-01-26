@@ -21,7 +21,7 @@ app.get('/', (req, res) => {
     res.send('Hello')
 });
 
-app.post('/search', async (req, res) => {
+app.post('/googleLensSearch', async (req, res) => {
     const { searchText } = req.body;
     let baseSource;
     let scrapedBaseData;
@@ -297,4 +297,102 @@ const getScrapedData = async (link, filterOptions) => {
         scrapedData = await scraperSourceAgoda(updatedUrl);
     }
     return scrapedData;
+}
+
+app.post('/googleSearch', async (req,res) => {
+    const { searchText } = req.body;
+    let baseSource;
+    let scrapedBaseData;
+    let filterOptions;
+    let googleSearchResult;
+    let returnData;
+
+    const sourceSiteList = [
+        "Airbnb",
+        "Booking.com",
+        "Vrbo",
+        "Expedia.com",
+        "Agoda.com"
+    ]
+    const BaseData = await getBaseData(searchText);
+    if (BaseData.status == 'success') {
+        baseSource = BaseData.baseSource;
+        scrapedBaseData = BaseData.scrapedData;
+        filterOptions = BaseData.filterOptions;
+        googleSearchResult = await getGoogleSearchData(scrapedBaseData.result.name);
+        console.log("googleSearchResult=>",googleSearchResult)
+        let scrapedData = [];
+        let restData = [];
+        if (googleSearchResult.status) {
+            const filteredData = googleSearchResult.data.filter(item =>
+                sourceSiteList.includes(item.source) && item.source !== baseSource
+            );
+
+            restData = googleSearchResult.data.filter(item =>
+                !sourceSiteList.includes(item.source)
+            );
+            const sortedFilteredData = filteredData.sort((a, b) => {
+                return sourceSiteList.indexOf(a.source) - sourceSiteList.indexOf(b.source);
+            });
+
+            const uniqueSourceData = [];
+            const seenSources = new Set();
+
+            for (const item of sortedFilteredData) {
+                if (!seenSources.has(item.source)) {
+                    seenSources.add(item.source);
+                    uniqueSourceData.push(item);
+                }
+            }
+            for (let index = 0; index < uniqueSourceData.length; index++) {
+                const item = uniqueSourceData[index];
+                const data = await getScrapedData(item.link, filterOptions);
+                scrapedData.push(data)
+            }
+        }
+        scrapedData.push(scrapedBaseData)
+        scrapedData = scrapedData.reduce((acc, item) => {
+            const source = item.result.source;
+            if (!acc[source]) {
+                acc[source] = [];
+            }
+            acc[source].push(item.result);
+            return acc;
+        }, {});
+        returnData = {
+            base_source: scrapedBaseData.result,
+            google_lens_search_result: scrapedData,
+            filter_options: filterOptions,
+            rest_data: restData,
+            status: 'success'
+        };
+    } else {
+        returnData = {
+            base_source: {},
+            google_lens_search_result: {},
+            filter_options: {},
+            rest_data: {},
+            status: 'false'
+        };
+    }
+    res.json(returnData);
+})
+
+const getGoogleSearchData = async (searchText) => {
+    console.log("searchText=>",searchText)
+    let returnData;
+    let googleSearchData
+    await getJson({
+        engine: "google",
+        api_key: process.env.GOOGLE_LENS_API_KEY,
+        q:searchText
+    }, (json) => {
+        googleSearchData = json['organic_results'];
+    });
+    if(googleSearchData.length){
+        returnData = { data: googleSearchData, status: true }
+    } else {
+        returnData = { data: null, status: false }
+    }
+    return returnData
 }
