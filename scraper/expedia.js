@@ -62,7 +62,7 @@ const scraperSourceExpedia = async (_url) => {
             source:'Expedia.com',
             name: await extractTitle(page, 'div[data-stid*="content-hotel-title"] h1'),
             image_urls: await extractImagesUrl(page),
-            price: await extractPrice(page, 'div[data-stid*="section-room-list"] div div:nth-child(1) div[data-test-id="price-summary-message-line"] span div'),
+            price: await extractPrice(page, 'div[data-stid="section-room-list"] div div:nth-child(1) div[data-test-id="price-summary-message-line"]:nth-child(2) div div div'),
             link: _url
         };
 

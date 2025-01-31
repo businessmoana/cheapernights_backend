@@ -109,7 +109,7 @@ const getBaseData = async (searchText) => {
     let returnData;
     const searchUrl = new URL(searchText);
     if (searchText.includes('airbnb.')) {
-        baseSource = 'Airbnb';
+        baseSource = 'airbnb';
         scrapedData = await scraperSourceAirbnb(searchText);
         filterOptions = {
             checkIn: searchUrl.searchParams.get('check_in'),
@@ -118,7 +118,7 @@ const getBaseData = async (searchText) => {
             children: searchUrl.searchParams.get('children'),
         }
     } else if (searchText.includes('booking.')) {
-        baseSource = 'Booking.com';
+        baseSource = 'booking';
         scrapedData = await scraperSourceBooking(searchText);
         filterOptions = {
             checkIn: searchUrl.searchParams.get('checkin'),
@@ -127,7 +127,7 @@ const getBaseData = async (searchText) => {
             children: searchUrl.searchParams.get('group_children'),
         }
     } else if (searchText.includes('expedia.')) {
-        baseSource = 'Expedia.com';
+        baseSource = 'expedia';
         scrapedData = await scraperSourceExpedia(searchText);
         filterOptions = {
             checkIn: searchUrl.searchParams.get('chkin'),
@@ -136,18 +136,18 @@ const getBaseData = async (searchText) => {
             children: 0,
         }
     } else if (searchText.includes('vrbo.')) {
-        baseSource = 'Vrbo';
+        baseSource = 'vrbo';
         scrapedData = await scraperSourceVrbo(searchText);
 
         const [count, ...ages] = searchUrl.searchParams.get('children') ? searchUrl.searchParams.get('children').split('_') : "";
         filterOptions = {
-            checkIn: searchUrl.searchParams.get('startDate'),
-            checkOut: searchUrl.searchParams.get('endDate'),
+            checkIn: searchUrl.searchParams.get('chkin'),
+            checkOut: searchUrl.searchParams.get('chkout'),
             adults: searchUrl.searchParams.get('adults'),
             children: count,
         }
     } else if (searchText.includes('agoda.')) {
-        baseSource = 'Agoda.com';
+        baseSource = 'agoda';
         scrapedData = await scraperSourceAgoda(searchText);
         const checkInString = searchUrl.searchParams.get('checkIn');
         const los = searchUrl.searchParams.get('los');
@@ -182,7 +182,7 @@ const getBaseData = async (searchText) => {
             status: 'false'
         };
     }
-
+    console.log("getBaseData=>", returnData)
     return returnData
 }
 
@@ -222,7 +222,7 @@ const getGoogleLensSearchData = async (imageUrls) => {
             }
         });
     });
-    if(uniqueData.length){
+    if (uniqueData.length) {
         returnData = { data: uniqueData, status: true }
     } else {
         returnData = { data: null, status: false }
@@ -234,8 +234,10 @@ const getScrapedData = async (link, filterOptions) => {
     let scrapedData;
     if (link.includes('airbnb.')) {
         const url = new URL(link);
-        url.searchParams.append('check_in', filterOptions.checkIn)
-        url.searchParams.append('check_out', filterOptions.checkOut)
+        if (filterOptions.checkIn)
+            url.searchParams.append('check_in', filterOptions.checkIn)
+        if (filterOptions.checkOut)
+            url.searchParams.append('check_out', filterOptions.checkOut)
         if (filterOptions.adults)
             url.searchParams.append('adults', filterOptions.adults)
         if (filterOptions.children)
@@ -244,8 +246,10 @@ const getScrapedData = async (link, filterOptions) => {
         scrapedData = await scraperSourceAirbnb(updatedUrl);
     } else if (link.includes('expedia.')) {
         const url = new URL(link);
-        url.searchParams.append('chkin', filterOptions.checkIn)
-        url.searchParams.append('chkout', filterOptions.checkOut)
+        if (filterOptions.checkIn)
+            url.searchParams.append('chkin', filterOptions.checkIn)
+        if (filterOptions.checkOut)
+            url.searchParams.append('chkout', filterOptions.checkOut)
         if (filterOptions.adults)
             url.searchParams.append('adults', filterOptions.adults)
         if (filterOptions.children) {
@@ -256,8 +260,10 @@ const getScrapedData = async (link, filterOptions) => {
         scrapedData = await scraperSourceExpedia(updatedUrl);
     } else if (link.includes('booking.')) {
         const url = new URL(link);
-        url.searchParams.append('checkin', filterOptions.checkIn)
-        url.searchParams.append('checkout', filterOptions.checkOut)
+        if (filterOptions.checkIn)
+            url.searchParams.append('checkin', filterOptions.checkIn)
+        if (filterOptions.checkOut)
+            url.searchParams.append('checkout', filterOptions.checkOut)
         if (filterOptions.adults)
             url.searchParams.append('group_adults', filterOptions.adults)
         if (filterOptions.children) {
@@ -267,8 +273,10 @@ const getScrapedData = async (link, filterOptions) => {
         scrapedData = await scraperSourceBooking(updatedUrl);
     } else if (link.includes('vrbo.')) {
         const url = new URL(link);
-        url.searchParams.append('chkin', filterOptions.checkIn)
-        url.searchParams.append('chkout', filterOptions.checkOut)
+        if (filterOptions.checkIn)
+            url.searchParams.append('chkin', filterOptions.checkIn)
+        if (filterOptions.checkOut)
+            url.searchParams.append('chkout', filterOptions.checkOut)
         if (filterOptions.adults)
             url.searchParams.append('adults', filterOptions.adults)
         if (filterOptions.children) {
@@ -279,15 +287,17 @@ const getScrapedData = async (link, filterOptions) => {
         scrapedData = await scraperSourceVrbo(updatedUrl);
     } else if (link.includes('agoda.')) {
         const url = new URL(link);
-        const checkInDate = new Date(filterOptions.checkIn);
-        const checkOutDate = new Date(filterOptions.checkOut);
+        if (filterOptions.checkIn) {
+            const checkInDate = new Date(filterOptions.checkIn);
+            const checkOutDate = new Date(filterOptions.checkOut);
 
-        const differenceInMs = checkOutDate - checkInDate;
+            const differenceInMs = checkOutDate - checkInDate;
 
-        const los = differenceInMs / (1000 * 60 * 60 * 24);
+            const los = differenceInMs / (1000 * 60 * 60 * 24);
 
-        url.searchParams.append('checkIn', filterOptions.checkIn)
-        url.searchParams.append('los', los)
+            url.searchParams.append('checkIn', filterOptions.checkIn)
+            url.searchParams.append('los', los)
+        }
         if (filterOptions.adults)
             url.searchParams.append('adults', filterOptions.adults)
         if (filterOptions.children) {
@@ -299,7 +309,7 @@ const getScrapedData = async (link, filterOptions) => {
     return scrapedData;
 }
 
-app.post('/googleSearch', async (req,res) => {
+app.post('/googleSearch', async (req, res) => {
     const { searchText } = req.body;
     let baseSource;
     let scrapedBaseData;
@@ -308,42 +318,52 @@ app.post('/googleSearch', async (req,res) => {
     let returnData;
 
     const sourceSiteList = [
-        "Airbnb",
-        "Booking.com",
-        "Vrbo",
-        "Expedia.com",
-        "Agoda.com"
+        "airbnb",
+        "booking",
+        "vrbo",
+        "expedia",
+        "agoda"
     ]
     const BaseData = await getBaseData(searchText);
     if (BaseData.status == 'success') {
         baseSource = BaseData.baseSource;
         scrapedBaseData = BaseData.scrapedData;
         filterOptions = BaseData.filterOptions;
-        googleSearchResult = await getGoogleSearchData(scrapedBaseData.result.name);
-        console.log("googleSearchResult=>",googleSearchResult)
+        const text = `${scrapedBaseData.result.name} ${scrapedBaseData.result.description} `
+        googleSearchResult = await getGoogleSearchData(text);
+        console.log("googleSearchResult=>", googleSearchResult)
         let scrapedData = [];
         let restData = [];
         if (googleSearchResult.status) {
-            const filteredData = googleSearchResult.data.filter(item =>
-                sourceSiteList.includes(item.source) && item.source !== baseSource
-            );
+            const filteredData = googleSearchResult.data.filter(item => {
+                const matchesSource = sourceSiteList.some(source => item.source.toLowerCase().includes(source));
+                const isBaseSourceExcluded = !item.source.toLowerCase().includes(baseSource.toLowerCase());
 
-            restData = googleSearchResult.data.filter(item =>
-                !sourceSiteList.includes(item.source)
-            );
-            const sortedFilteredData = filteredData.sort((a, b) => {
-                return sourceSiteList.indexOf(a.source) - sourceSiteList.indexOf(b.source);
+                return matchesSource && isBaseSourceExcluded;
             });
 
+            restData = googleSearchResult.data.filter(item =>
+                !sourceSiteList.some(source => item.source.toLowerCase().includes(source))
+            );
+
+            const sortedFilteredData = filteredData.sort((a, b) => {
+                const aIndex = sourceSiteList.findIndex(source => a.source.toLowerCase().includes(source));
+                const bIndex = sourceSiteList.findIndex(source => b.source.toLowerCase().includes(source));
+                return aIndex - bIndex;
+            });
+
+            console.log("sortedFilteredData=>", sortedFilteredData)
             const uniqueSourceData = [];
             const seenSources = new Set();
 
-            for (const item of sortedFilteredData) {
-                if (!seenSources.has(item.source)) {
-                    seenSources.add(item.source);
+            sortedFilteredData.forEach(item => {
+                const matchedSource = sourceSiteList.find(source => item.source.toLowerCase().includes(source));
+
+                if (matchedSource && !seenSources.has(matchedSource)) {
+                    seenSources.add(matchedSource);
                     uniqueSourceData.push(item);
                 }
-            }
+            });
             for (let index = 0; index < uniqueSourceData.length; index++) {
                 const item = uniqueSourceData[index];
                 const data = await getScrapedData(item.link, filterOptions);
@@ -379,17 +399,17 @@ app.post('/googleSearch', async (req,res) => {
 })
 
 const getGoogleSearchData = async (searchText) => {
-    console.log("searchText=>",searchText)
     let returnData;
-    let googleSearchData
+    let googleSearchData;
     await getJson({
         engine: "google",
         api_key: process.env.GOOGLE_LENS_API_KEY,
-        q:searchText
+        q: searchText,
+        num:100
     }, (json) => {
         googleSearchData = json['organic_results'];
     });
-    if(googleSearchData.length){
+    if (googleSearchData?.length) {
         returnData = { data: googleSearchData, status: true }
     } else {
         returnData = { data: null, status: false }

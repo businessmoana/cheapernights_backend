@@ -44,6 +44,16 @@ const extractTitle = async (page, selector) => {
     }
 };
 
+const extractDescription = async (page, selector) => {
+    try {
+        // await retrySelector(page, selector);
+        return await page.$eval(selector, (e) => e.innerText);
+    } catch (e) {
+        console.error('Error extracting Title:', e.message);
+        return [];
+    }
+};
+
 const scraperSourceVrbo = async (_url) => {
     const browser = await puppeteer.launch({
         headless: false,
@@ -64,6 +74,7 @@ const scraperSourceVrbo = async (_url) => {
             name: await extractTitle(page, 'div[data-stid*="content-hotel-title"] h1'),
             image_urls: await extractImagesUrl(page),
             price: await extractPrice(page, 'div[data-stid*="total-price"] div div:nth-child(2) span'),
+            description:await extractDescription(page,'div[data-stid="content-markup"]'),
             link: _url
         };
 

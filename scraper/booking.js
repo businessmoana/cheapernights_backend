@@ -29,6 +29,16 @@ const extractImagesUrl = async (page, selector) => {
     }
 };
 
+const extractDescription = async (page, selector) => {
+    try {
+        await retrySelector(page, selector);
+        return await page.$eval(selector, (e) => e.innerText);
+    } catch (e) {
+        console.error('Error extracting Title:', e.message);
+        return [];
+    }
+};
+
 const extractJson = async (page) => {
     try {
         await retrySelector(page, 'script[type="application/ld+json"]');
@@ -37,7 +47,7 @@ const extractJson = async (page) => {
         const data = JSON.parse(jsonStr);
         return {
             source: 'Booking.com',
-            // address: data.address || 'N/A',
+            address: data.address || 'N/A',
             // image_urls: [data.image],
             name: data.name || 'N/A',
         };
@@ -83,9 +93,10 @@ const scraperSourceBooking = async (_url) => {
             ...(await extractJson(page)),
             price: await extractPrice(
                 page,
-                'tr.hprt-table-cheapest-block td.hprt-table-cell-price div div.bui-price-display div.bui-price-display__value span:nth-child(1)',
+                'table#hprt-table tr:nth-child(1) td.hprt-table-cell-price div div.bui-price-display div.bui-price-display__value span:nth-child(1)',
             ),
             image_urls: await extractImagesUrl(page, 'div#photo_wrapper img'),
+            description:await extractDescription(page, 'div[data-testid="host-profile"] > div div:nth-child(2) div:nth-child(1)'),
             link: _url
 
         };

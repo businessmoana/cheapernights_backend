@@ -45,15 +45,15 @@ const extractTitle = async (page, selector) => {
     }
 };
 
-const getButtonByText = async (page, text) => {
-    const buttonHandle = await page.evaluateHandle((text) => {
-        const buttons = Array.from(document.querySelectorAll('button'));
-        return buttons.find(button => {
-            const innerText = button.querySelector('div > div')?.innerText;
-            return innerText === text;
-        });
-    }, text);
-    return buttonHandle;
+
+const extractDescription = async (page, selector) => {
+    try {
+        // await retrySelector(page, selector);
+        return await page.$eval(selector, (e) => e.innerText);
+    } catch (e) {
+        console.error('Error extracting Title:', e.message);
+        return [];
+    }
 };
 
 const scraperBaseSourceAirbnb = async (_url) => {
@@ -78,6 +78,7 @@ const scraperBaseSourceAirbnb = async (_url) => {
             name: await extractTitle(page, 'h1.hpipapi'),
             image_urls: await extractImagesUrl(page),
             price: await extractPrice(page, 'main#site-content div[data-section-id="BOOK_IT_SIDEBAR"] section span._j1kt73'),
+            description:await extractDescription(page,'div[data-section-id="DESCRIPTION_DEFAULT"] span > span'),
             link: _url
         };
 
