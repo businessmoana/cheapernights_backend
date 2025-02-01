@@ -56,6 +56,16 @@ const extractDescription = async (page, selector) => {
     }
 };
 
+const extractAddress = async (page, selector) => {
+    try {
+        // await retrySelector(page, selector);
+        return await page.$eval(selector, (e) => e.innerText);
+    } catch (e) {
+        console.error('Error extracting Title:', e.message);
+        return [];
+    }
+};
+
 const scraperBaseSourceAirbnb = async (_url) => {
     // const url = new URL(_url);
     // url.searchParams.append('modal','PHOTO_TOUR_SCROLLABLE')
@@ -78,7 +88,9 @@ const scraperBaseSourceAirbnb = async (_url) => {
             name: await extractTitle(page, 'h1.hpipapi'),
             image_urls: await extractImagesUrl(page),
             price: await extractPrice(page, 'main#site-content div[data-section-id="BOOK_IT_SIDEBAR"] section span._j1kt73'),
-            description:await extractDescription(page,'div[data-section-id="DESCRIPTION_DEFAULT"] span > span'),
+            address:await extractAddress(page, ),
+            // description:await extractDescription(page,'div[data-section-id="DESCRIPTION_DEFAULT"] span > span'),
+            description:"",
             link: _url
         };
 

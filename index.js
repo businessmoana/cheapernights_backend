@@ -370,13 +370,16 @@ app.post('/googleSearch', async (req, res) => {
                 scrapedData.push(data)
             }
         }
-        scrapedData.push(scrapedBaseData)
+        scrapedData.push(scrapedBaseData);
+        console.log("scrapedData=>",scrapedData)
         scrapedData = scrapedData.reduce((acc, item) => {
-            const source = item.result.source;
-            if (!acc[source]) {
-                acc[source] = [];
+            if(item){ 
+                const source = item.result.source;
+                if (!acc[source]) {
+                    acc[source] = [];
+                }
+                acc[source].push(item.result);
             }
-            acc[source].push(item.result);
             return acc;
         }, {});
         returnData = {
