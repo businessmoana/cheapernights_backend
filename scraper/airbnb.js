@@ -67,7 +67,8 @@ const extractAddress = async (page, selector) => {
 };
 
 const scraperBaseSourceAirbnb = async (_url) => {
-    const url = new URL(_url);
+    const newUrl = _url.replace(/\/www.airbnb.co.[a-z]{2}\//, '/www.airbnb.co.uk/');
+    const url = new URL(newUrl);
     url.searchParams.append('selected_currency', 'GBP')
     const browser = await puppeteer.launch({
         headless: false,
