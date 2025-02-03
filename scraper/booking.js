@@ -74,8 +74,8 @@ const extractPrice = async (page, selector) => {
 };
 
 const scraperSourceBooking = async (_url) => {
-    // const url = new URL(_url);
-    // url.searchParams.append('activeTab', 'photosGallery')
+    const url = new URL(_url);
+    url.searchParams.append('selected_currency', 'GBP')
     const browser = await puppeteer.launch({
         headless: false,
         args: ['--window-size=1600,1000', '--no-sandbox', '--disable-setuid-sandbox', '--disable-gpu'],
@@ -88,7 +88,7 @@ const scraperSourceBooking = async (_url) => {
         page = await browser.newPage();
         await page.setViewport({ width: 1600, height: 1000 });
         page.setDefaultNavigationTimeout(0);
-        await page.goto(_url, { waitUntil: 'networkidle2' });
+        await page.goto(url, { waitUntil: 'networkidle2' });
         const json = {
             ...(await extractJson(page)),
             price: await extractPrice(
@@ -97,7 +97,7 @@ const scraperSourceBooking = async (_url) => {
             ),
             image_urls: await extractImagesUrl(page, 'div#photo_wrapper img'),
             description:await extractDescription(page, 'div[data-testid="host-profile"] > div div:nth-child(2) div:nth-child(1)'),
-            link: _url
+            link: url
 
         };
 

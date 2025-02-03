@@ -324,6 +324,7 @@ app.post('/googleSearch', async (req, res) => {
         "expedia",
         "agoda"
     ]
+    // const BaseData = await getGoogleAboutThis(searchText);
     const BaseData = await getBaseData(searchText);
     if (BaseData.status == 'success') {
         baseSource = BaseData.baseSource;
@@ -371,9 +372,9 @@ app.post('/googleSearch', async (req, res) => {
             }
         }
         scrapedData.push(scrapedBaseData);
-        console.log("scrapedData=>",scrapedData)
+        console.log("scrapedData=>", scrapedData)
         scrapedData = scrapedData.reduce((acc, item) => {
-            if(item){ 
+            if (item) {
                 const source = item.result.source;
                 if (!acc[source]) {
                     acc[source] = [];
@@ -408,8 +409,10 @@ const getGoogleSearchData = async (searchText) => {
         engine: "google",
         api_key: process.env.GOOGLE_LENS_API_KEY,
         q: searchText,
-        num:100
+        num: 100,
+        hl:"en"
     }, (json) => {
+        console.log(json)
         googleSearchData = json['organic_results'];
     });
     if (googleSearchData?.length) {
@@ -417,5 +420,17 @@ const getGoogleSearchData = async (searchText) => {
     } else {
         returnData = { data: null, status: false }
     }
+    return returnData
+}
+
+const getGoogleAboutThis = async (url) => {
+    let returnData;
+    await getJson({
+        engine: "google_about_this_result",
+        api_key: process.env.GOOGLE_LENS_API_KEY,
+        q: url,
+    }, (json) => {
+        returnData = { data: json, status: true }
+    });
     return returnData
 }

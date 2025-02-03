@@ -67,8 +67,8 @@ const extractAddress = async (page, selector) => {
 };
 
 const scraperBaseSourceAirbnb = async (_url) => {
-    // const url = new URL(_url);
-    // url.searchParams.append('modal','PHOTO_TOUR_SCROLLABLE')
+    const url = new URL(_url);
+    url.searchParams.append('selected_currency', 'GBP')
     const browser = await puppeteer.launch({
         headless: false,
         args: ['--window-size=1600,1000', '--no-sandbox', '--disable-setuid-sandbox', '--disable-gpu'],
@@ -81,7 +81,7 @@ const scraperBaseSourceAirbnb = async (_url) => {
         page = await browser.newPage();
         await page.setViewport({ width: 1600, height: 1000 });
         page.setDefaultNavigationTimeout(0);
-        await page.goto(_url, { waitUntil: 'networkidle2' });
+        await page.goto(url, { waitUntil: 'networkidle2' });
 
         const json = {
             source: 'Airbnb',
@@ -91,7 +91,7 @@ const scraperBaseSourceAirbnb = async (_url) => {
             address:await extractAddress(page, ),
             // description:await extractDescription(page,'div[data-section-id="DESCRIPTION_DEFAULT"] span > span'),
             description:"",
-            link: _url
+            link: url
         };
 
         return { result: json, error: null };
