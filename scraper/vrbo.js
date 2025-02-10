@@ -55,7 +55,6 @@ const extractDescription = async (page, selector) => {
 };
 
 const scraperSourceVrbo = async (_url) => {
-    const newUrl = _url.replace(/\/en-[a-z]{2}\//, '/en-gb/');
     const browser = await puppeteer.launch({
         headless: false,
         args: ['--window-size=1600,1000', '--no-sandbox', '--disable-setuid-sandbox', '--disable-gpu'],
@@ -68,7 +67,7 @@ const scraperSourceVrbo = async (_url) => {
         page = await browser.newPage();
         await page.setViewport({ width: 1600, height: 1000 });
         page.setDefaultNavigationTimeout(0);
-        await page.goto(newUrl, { waitUntil: 'networkidle2' });
+        await page.goto(_url, { waitUntil: 'networkidle2' });
 
         const json = {
             source: 'Vrbo',
@@ -76,7 +75,7 @@ const scraperSourceVrbo = async (_url) => {
             image_urls: await extractImagesUrl(page),
             price: await extractPrice(page, 'div[data-stid*="total-price"] div div:nth-child(2) span'),
             description:await extractDescription(page,'div[data-stid="content-markup"]'),
-            link: newUrl
+            link: _url
         };
 
         return { result: json, error: null };
