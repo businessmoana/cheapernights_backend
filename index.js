@@ -399,15 +399,17 @@ const getScrapedData = async (link, filterOptions, ipAddress) => {
 const getGoogleSearchData = async (searchText) => {
     let returnData;
     let googleSearchData;
-    await getJson({
-        engine: "google",
-        api_key: process.env.GOOGLE_LENS_API_KEY,
-        q: searchText,
-        num: 100,
-        hl: "en"
-    }, (json) => {
-        googleSearchData = json['organic_results'];
-    });
+    if (searchText != "") {
+        await getJson({
+            engine: "google",
+            api_key: process.env.GOOGLE_LENS_API_KEY,
+            q: searchText,
+            num: 100,
+            hl: "en"
+        }, (json) => {
+            googleSearchData = json['organic_results'];
+        });
+    }
     if (googleSearchData?.length) {
         returnData = { data: googleSearchData, status: true }
     } else {
@@ -462,16 +464,20 @@ const getGoogleLensMutipleImageSearchData = async (imageUrls) => {
 
 const getGoogleLensSearchData = async (imageUrl) => {
     let returnData;
-    await getJson({
-        engine: "google_lens",
-        url: imageUrl,
-        api_key: process.env.GOOGLE_LENS_API_KEY,
-    }, (json) => {
-        const googleLensSearchResult = json['visual_matches'];
-        if (googleLensSearchResult)
-            returnData = { data: googleLensSearchResult, status: true }
-        else returnData = { data: null, status: false }
-    });
+    if(imageUrl !=""){
+        await getJson({
+            engine: "google_lens",
+            url: imageUrl,
+            api_key: process.env.GOOGLE_LENS_API_KEY,
+        }, (json) => {
+            const googleLensSearchResult = json['visual_matches'];
+            if (googleLensSearchResult)
+                returnData = { data: googleLensSearchResult, status: true }
+            else returnData = { data: null, status: false }
+        });
+    } else {
+        returnData = { data: null, status: false }
+    }
     return returnData;
 }
 
