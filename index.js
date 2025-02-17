@@ -40,7 +40,7 @@ const handleGoogleSearch = async (req, res) => {
         baseSource = BaseData.baseSource;
         scrapedBaseData = BaseData.scrapedData;
         filterOptions = BaseData.filterOptions;
-        const text = `${scrapedBaseData.result.name} ${scrapedBaseData.result.description} `
+        const text = `${scrapedBaseData.result.name} ${scrapedBaseData.result.description} `;
         googleSearchResult = await getGoogleSearchData(text);
         googleLensSearchResult = await getGoogleLensSearchData(scrapedBaseData.result.image_urls[0]);
         let scrapedData = [];
@@ -54,16 +54,16 @@ const handleGoogleSearch = async (req, res) => {
             });
 
             let additionalData = [];
-            if (googleLensSearchResult.status)
+            if (googleLensSearchResult.status) {
                 additionalData = googleLensSearchResult.data.filter(item => {
                     const matchesSource = sourceSiteList.some(source => item.source.toLowerCase().includes(source));
                     const isBaseSourceExcluded = !item.source.toLowerCase().includes(baseSource.toLowerCase());
 
                     return matchesSource && isBaseSourceExcluded;
                 });
-            console.log("additionalData=>",additionalData)
-            filteredData = filteredData.concat(additionalData);
-            console.log("filteredData=>",filteredData)
+            }
+            if (additionalData.length)
+                filteredData = filteredData.concat(additionalData);
 
             restData = googleSearchResult.data.filter(item =>
                 !sourceSiteList.some(source => item.source.toLowerCase().includes(source))
@@ -468,11 +468,9 @@ const getGoogleLensSearchData = async (imageUrl) => {
         api_key: process.env.GOOGLE_LENS_API_KEY,
     }, (json) => {
         const googleLensSearchResult = json['visual_matches'];
-        console.log("googleLensSearchResult=>", googleLensSearchResult);
-
         if (googleLensSearchResult)
-            returnData =  { data: googleLensSearchResult, status: true }
-        else returnData =  { data: null, status: false }
+            returnData = { data: googleLensSearchResult, status: true }
+        else returnData = { data: null, status: false }
     });
     return returnData;
 }
