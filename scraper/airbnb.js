@@ -90,8 +90,8 @@ const scraperBaseSourceAirbnb = async (_url) => {
             image_urls: await extractImagesUrl(page),
             price: await extractPrice(page, 'main#site-content div[data-section-id="BOOK_IT_SIDEBAR"] section span._j1kt73'),
             address:await extractAddress(page, ),
-            // description:await extractDescription(page,'div[data-section-id="DESCRIPTION_DEFAULT"] span > span'),
-            description:"",
+            description:await extractDescription(page,'div[data-section-id="DESCRIPTION_DEFAULT"] span > span'),
+            // description:"",
             link: url
         };
 
