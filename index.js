@@ -40,11 +40,15 @@ const handleGoogleSearch = async (req, res) => {
         baseSource = BaseData.baseSource;
         scrapedBaseData = BaseData.scrapedData;
         filterOptions = BaseData.filterOptions;
-        const text = `${scrapedBaseData.result.name} ${scrapedBaseData.result.description} `;
-        googleSearchResult = await getGoogleSearchData(text);
-        googleLensSearchResult = await getGoogleLensSearchData(scrapedBaseData.result.image_urls[0]);
         let scrapedData = [];
+        const name = scrapedBaseData?.result?.name || '';
+        const description = scrapedBaseData?.result?.description || '';
+        const text = `${name} ${description}`.trim();
         let restData = [];
+
+        googleSearchResult = await getGoogleSearchData(name);
+        googleSearchResultWithDescription = await getGoogleSearchData(text);
+        googleLensSearchResult = await getGoogleLensSearchData(scrapedBaseData.result.image_urls[0]);
         if (googleSearchResult.status) {
             let filteredData = googleSearchResult.data.filter(item => {
                 const matchesSource = sourceSiteList.some(source => item.source.toLowerCase().includes(source));
@@ -53,7 +57,16 @@ const handleGoogleSearch = async (req, res) => {
                 return matchesSource && isBaseSourceExcluded;
             });
 
-            let additionalData = [];
+            let additionalDataWithDescription = [];
+            if (googleSearchResultWithDescription.status) {
+                additionalData = googleSearchResultWithDescription.data.filter(item => {
+                    const matchesSource = sourceSiteList.some(source => item.source.toLowerCase().includes(source));
+                    const isBaseSourceExcluded = !item.source.toLowerCase().includes(baseSource.toLowerCase());
+
+                    return matchesSource && isBaseSourceExcluded;
+                });
+            }
+            let additionalDataWithGoogleLens = [];
             if (googleLensSearchResult.status) {
                 additionalData = googleLensSearchResult.data.filter(item => {
                     const matchesSource = sourceSiteList.some(source => item.source.toLowerCase().includes(source));
@@ -62,8 +75,10 @@ const handleGoogleSearch = async (req, res) => {
                     return matchesSource && isBaseSourceExcluded;
                 });
             }
-            if (additionalData.length)
-                filteredData = filteredData.concat(additionalData);
+            if (additionalDataWithDescription.length)
+                filteredData = filteredData.concat(additionalDataWithDescription);
+            if (additionalDataWithGoogleLens.length)
+                filteredData = filteredData.concat(additionalDataWithGoogleLens);
 
             restData = googleSearchResult.data.filter(item =>
                 !sourceSiteList.some(source => item.source.toLowerCase().includes(source))
@@ -77,7 +92,6 @@ const handleGoogleSearch = async (req, res) => {
 
             const uniqueSourceData = [];
             const seenSources = new Set();
-
             sortedFilteredData.forEach(item => {
                 const matchedSource = sourceSiteList.find(source => item.source.toLowerCase().includes(source));
 
@@ -105,7 +119,7 @@ const handleGoogleSearch = async (req, res) => {
         }, {});
         returnData = {
             base_source: scrapedBaseData.result,
-            google_lens_search_result: scrapedData,
+            google_search_result: scrapedData,
             filter_options: filterOptions,
             rest_data: restData,
             status: 'success'
@@ -113,7 +127,7 @@ const handleGoogleSearch = async (req, res) => {
     } else {
         returnData = {
             base_source: {},
-            google_lens_search_result: {},
+            google_search_result: {},
             filter_options: {},
             rest_data: {},
             status: 'false'
@@ -305,23 +319,24 @@ const getScrapedData = async (link, filterOptions, ipAddress) => {
     } else if (link.includes('expedia.')) {
         const parsedUrl = new URL(link);
         const newUrl = new URL(parsedUrl);
-        let countryCode = currencies['expedia'][customerInfo.country_code]['currency'] ? customerInfo.country_code : 'US';
-        let currencyType = '';
-        let newBase = '';
-        if (countryCode == 'US') {
-            newBase = `www.expedia.com/`;
-            currencyType = 'USD'
-        } else {
-            newBase = `www.${currencies['expedia'][customerInfo.country_code]['url']}`;
-            currencyType = `${currencies['expedia'][customerInfo.country_code]['currency']}`;
-        }
-        newUrl.host = newBase;
-        if (newUrl.pathname.startsWith('/en/')) {
-            newUrl.pathname = newUrl.pathname.replace(/^\/en/, '');
-        }
-        newUrl.pathname = `/${currencies['expedia'][customerInfo.country_code]['addPath']}${newUrl.pathname}`;
+        // let countryCode = currencies['expedia'][customerInfo.country_code]['currency'] ? customerInfo.country_code : 'US';
+        // let currencyType = '';
+        // let newBase = '';
+        // if (countryCode == 'US') {
+        //     newBase = `www.expedia.com`;
+        //     currencyType = 'USD'
+        // } else {
+        //     newBase = `www.${currencies['expedia'][customerInfo.country_code]['url']}`;
+        //     currencyType = `${currencies['expedia'][customerInfo.country_code]['currency']}`;
+        // }
+        // newUrl.host = newBase;
+        // if (newUrl.pathname.startsWith('/en/')) {
+        //     newUrl.pathname = newUrl.pathname.replace(/^\/en/, '');
+        // }
+        // if (currencies['expedia'][customerInfo.country_code]['addPath'] != "")
+        //     newUrl.pathname = `/${currencies['expedia'][customerInfo.country_code]['addPath']}${newUrl.pathname}`;
 
-        newUrl.searchParams.append('currency', currencyType)
+        // newUrl.searchParams.append('currency', currencyType)
         if (filterOptions.checkIn)
             newUrl.searchParams.append('chkin', filterOptions.checkIn)
         if (filterOptions.checkOut)
@@ -359,7 +374,7 @@ const getScrapedData = async (link, filterOptions, ipAddress) => {
         } else {
             _url = `https://www.vrbo.com/${currencies['vrbo'][customerInfo.country_code]}/p${propertyId}`;
         }
-        const url = new URL(_url);
+        const url = new URL(link);
         if (filterOptions.checkIn)
             url.searchParams.append('chkin', filterOptions.checkIn)
         if (filterOptions.checkOut)
@@ -399,15 +414,16 @@ const getScrapedData = async (link, filterOptions, ipAddress) => {
 const getGoogleSearchData = async (searchText) => {
     let returnData;
     let googleSearchData;
-    if (searchText != "") {
+    if (searchText && searchText != "") {
         await getJson({
             engine: "google",
             api_key: process.env.GOOGLE_LENS_API_KEY,
             q: searchText,
-            num: 100,
+            num: 50,
             hl: "en"
         }, (json) => {
             googleSearchData = json['organic_results'];
+            console.log("googleSearchData=>", googleSearchData)
         });
     }
     if (googleSearchData?.length) {
@@ -464,13 +480,15 @@ const getGoogleLensMutipleImageSearchData = async (imageUrls) => {
 
 const getGoogleLensSearchData = async (imageUrl) => {
     let returnData;
-    if(imageUrl !=""){
+    console.log("imageUrl=>>", imageUrl)
+    if (imageUrl && imageUrl != "") {
         await getJson({
             engine: "google_lens",
             url: imageUrl,
             api_key: process.env.GOOGLE_LENS_API_KEY,
         }, (json) => {
             const googleLensSearchResult = json['visual_matches'];
+
             if (googleLensSearchResult)
                 returnData = { data: googleLensSearchResult, status: true }
             else returnData = { data: null, status: false }
@@ -487,10 +505,10 @@ const getCustomerInfoFromIpAddress = async (ipAddress) => {
 }
 
 const getPropertyIdOnVrbo = (url) => {
-    const regex = /\/p(\d+)|\/(\d+)ha/; // Matches the pattern for propertyId
+    const regex = /\/(p(\d+)|(\d+)ha|(\d+))(?:\/|$)/; // Matches all three patterns
     const match = url.match(regex);
-    return match ? match[1] || match[2] : null; // Returns the propertyId or null if not found
-}
+    return match ? match[2] || match[3] || match[4] : null; // Returns the propertyId or null if not found
+};
 
 
 app.get('/', (req, res) => {

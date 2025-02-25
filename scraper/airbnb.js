@@ -26,9 +26,21 @@ const extractImagesUrl = async (page) => {
 };
 
 const extractPrice = async (page, selector) => {
+    let total = '',
+        perNight = '';
     try {
-        // await retrySelector(page, selector);
-        return await page.$eval(selector, (e) => e.innerText);
+        const element = await page.$('main#site-content div[data-section-id*="BOOK_IT_SIDEBAR"]');
+        if (element) {
+            total = await page.$eval(
+                'main#site-content div[data-section-id="BOOK_IT_SIDEBAR"] section span._j1kt73',
+                (e) => e.innerText,
+            );
+            perNight = await page.$eval(
+                'main#site-content div[data-section-id*="BOOK_IT_SIDEBAR"] span._hb913q',
+                (e) => e.innerText,
+            );
+        }
+        return {total:total, perNight:perNight};
     } catch (e) {
         console.error('Error extracting Price:', e.message);
         return [];
@@ -41,7 +53,7 @@ const extractTitle = async (page, selector) => {
         return await page.$eval(selector, (e) => e.innerText);
     } catch (e) {
         console.error('Error extracting Title:', e.message);
-        return [];
+        return '';
     }
 };
 
@@ -52,17 +64,49 @@ const extractDescription = async (page, selector) => {
         return await page.$eval(selector, (e) => e.innerText);
     } catch (e) {
         console.error('Error extracting Title:', e.message);
-        return [];
+        return '';
     }
 };
 
 const extractAddress = async (page, selector) => {
     try {
-        // await retrySelector(page, selector);
-        return await page.$eval(selector, (e) => e.innerText);
+        return await page.$eval('div[data-section-id*="OVERVIEW"] section div:nth-child(1)', (e) =>
+            e.innerText.slice(e.innerText.indexOf(' in ') + 3).trim(),
+        );
     } catch (e) {
-        console.error('Error extracting Title:', e.message);
-        return [];
+        console.error('Error extracting address:', e.message);
+        return '';
+    }
+};
+
+const extractReviews = async (page) => {
+    let rating = '',
+        review = '';
+    try {
+        const element = await page.$('div[data-section-id*="GUEST_FAVORITE"]');
+        if (element) {
+            rating = await page.$eval(
+                'div[data-section-id*="GUEST_FAVORITE"] div[data-testid="pdp-reviews-highlight-banner-host-rating"]',
+                (e) => e.innerText,
+            );
+            review = await page.$eval(
+                'div[data-section-id*="GUEST_FAVORITE"] div[data-testid="pdp-reviews-highlight-banner-host-review"]',
+                (e) => e.innerText,
+            );
+        } else {
+            rating = await page.$eval(
+                'div[data-section-id*="OVERVIEW"] section div:nth-child(3) span',
+                (e) => e.innerText,
+            );
+            review = await page.$eval(
+                'div[data-section-id*="OVERVIEW"] section div:nth-child(3) a',
+                (e) => e.innerText,
+            );
+        }
+        return { aggregate_score: rating.match(/(\d+(\.\d+)?)/)[0], total_reviews: review.match(/(\d+)/)[0], type:5 };
+    } catch (e) {
+        console.error('Error extracting reviews:', e.message);
+        return {};
     }
 };
 
@@ -87,10 +131,11 @@ const scraperBaseSourceAirbnb = async (_url) => {
         const json = {
             source: 'Airbnb',
             name: await extractTitle(page, 'h1.hpipapi'),
+            reviews: await extractReviews(page),
             image_urls: await extractImagesUrl(page),
-            price: await extractPrice(page, 'main#site-content div[data-section-id="BOOK_IT_SIDEBAR"] section span._j1kt73'),
-            address:await extractAddress(page, ),
-            description:await extractDescription(page,'div[data-section-id="DESCRIPTION_DEFAULT"] span > span'),
+            price: await extractPrice(page),
+            address: await extractAddress(page),
+            description: await extractDescription(page, 'div[data-section-id="DESCRIPTION_DEFAULT"] span > span'),
             // description:"",
             link: url
         };

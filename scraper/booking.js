@@ -35,7 +35,7 @@ const extractDescription = async (page, selector) => {
         return await page.$eval(selector, (e) => e.innerText);
     } catch (e) {
         console.error('Error extracting Title:', e.message);
-        return [];
+        return '';
     }
 };
 
@@ -46,10 +46,14 @@ const extractJson = async (page) => {
         // await page.setJavaScriptEnabled(true);
         const data = JSON.parse(jsonStr);
         return {
-            source: 'Booking.com',
-            address: data.address || 'N/A',
-            // image_urls: [data.image],
-            name: data.name || 'N/A',
+            source: 'Booking',
+            address: `${data.address.addressRegion} ${data.address.addressCountry}` || 'N/A',
+            name: data.name || '',
+            reviews: {
+                aggregate_score: data.aggregateRating.ratingValue || 0,
+                total_reviews: data.aggregateRating.reviewCount || 0,
+                type:10
+            },
         };
     } catch (e) {
         console.error('Error extracting json:', e.message);
@@ -58,15 +62,17 @@ const extractJson = async (page) => {
 };
 
 const extractPrice = async (page, selector) => {
+    let total = "";
     try {
         await retrySelector(page, selector);
         const elementHTML = await page.evaluate((selector) => {
             const element = document.querySelector(selector);
             return element ? element.outerHTML : null; // Return outer HTML
         }, selector);
-
-        console.log("Selected Element HTML:", elementHTML);
-        return await page.$eval(selector, (e) => e.innerText);
+        if(elementHTML){
+            total =  await page.$eval(selector, (e) => e.innerText);
+        }
+        return {total:total, perNight:''};
     } catch (e) {
         console.error(`Error extracting price:`, e.message);
         return '';
