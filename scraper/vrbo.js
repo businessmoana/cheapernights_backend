@@ -4,7 +4,7 @@ const sleep = require('../utils/sleep');
 const retrySelector = async (page, selector, retries = 3) => {
     for (let i = 0; i < retries; i++) {
         try {
-            return await page.waitForSelector(selector, { timeout: 5000 });
+            return await page.waitForSelector(selector, { timeout: 1000 });
         } catch (e) {
             console.error(e);
             await sleep(1000);
