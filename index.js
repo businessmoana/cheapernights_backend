@@ -224,7 +224,11 @@ const getBaseData = async (searchText, ipAddress) => {
     const searchUrl = new URL(searchText);
     if (searchText.includes('airbnb.')) {
         baseSource = 'airbnb';
-        scrapedData = await scraperSourceAirbnb(searchText);
+        const url = new URL(searchText);
+        let currencyCode = customerInfo.currency_code;
+        let currencyType = currencies['airbnb'].currencies.includes(currencyCode) ? currencyCode : 'USD';
+        url.searchParams.append('currency', currencyType)
+        scrapedData = await scraperSourceAirbnb(url.toString());
         filterOptions = {
             checkIn: searchUrl.searchParams.get('check_in'),
             checkOut: searchUrl.searchParams.get('check_out'),
@@ -233,7 +237,11 @@ const getBaseData = async (searchText, ipAddress) => {
         }
     } else if (searchText.includes('booking.')) {
         baseSource = 'booking';
-        scrapedData = await scraperSourceBooking(searchText);
+        const url = new URL(searchText);
+        let currencyCode = customerInfo.currency_code;
+        let currencyType = currencies['booking'].currencies.includes(currencyCode) ? currencyCode : 'USD';
+        url.searchParams.append('selected_currency', currencyType)
+        scrapedData = await scraperSourceBooking(url.toString());
         filterOptions = {
             checkIn: searchUrl.searchParams.get('checkin'),
             checkOut: searchUrl.searchParams.get('checkout'),
