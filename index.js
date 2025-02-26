@@ -46,66 +46,66 @@ const handleGoogleSearch = async (req, res) => {
         const text = `${name} ${description}`.trim();
         let restData = [];
 
-        googleSearchResult = await getGoogleSearchData(name);
-        googleSearchResultWithDescription = await getGoogleSearchData(text);
-        googleLensSearchResult = await getGoogleLensSearchData(scrapedBaseData.result.image_urls[0]);
-        if (googleSearchResult.status) {
-            let filteredData = googleSearchResult.data.filter(item => {
-                const matchesSource = sourceSiteList.some(source => item.source.toLowerCase().includes(source));
-                const isBaseSourceExcluded = !item.source.toLowerCase().includes(baseSource.toLowerCase());
+        // googleSearchResult = await getGoogleSearchData(name);
+        // googleSearchResultWithDescription = await getGoogleSearchData(text);
+        // googleLensSearchResult = await getGoogleLensSearchData(scrapedBaseData.result.image_urls[0]);
+        // if (googleSearchResult.status) {
+        //     let filteredData = googleSearchResult.data.filter(item => {
+        //         const matchesSource = sourceSiteList.some(source => item.source.toLowerCase().includes(source));
+        //         const isBaseSourceExcluded = !item.source.toLowerCase().includes(baseSource.toLowerCase());
 
-                return matchesSource && isBaseSourceExcluded;
-            });
+        //         return matchesSource && isBaseSourceExcluded;
+        //     });
 
-            let additionalDataWithDescription = [];
-            if (googleSearchResultWithDescription.status) {
-                additionalData = googleSearchResultWithDescription.data.filter(item => {
-                    const matchesSource = sourceSiteList.some(source => item.source.toLowerCase().includes(source));
-                    const isBaseSourceExcluded = !item.source.toLowerCase().includes(baseSource.toLowerCase());
+        //     let additionalDataWithDescription = [];
+        //     if (googleSearchResultWithDescription.status) {
+        //         additionalData = googleSearchResultWithDescription.data.filter(item => {
+        //             const matchesSource = sourceSiteList.some(source => item.source.toLowerCase().includes(source));
+        //             const isBaseSourceExcluded = !item.source.toLowerCase().includes(baseSource.toLowerCase());
 
-                    return matchesSource && isBaseSourceExcluded;
-                });
-            }
-            let additionalDataWithGoogleLens = [];
-            if (googleLensSearchResult.status) {
-                additionalData = googleLensSearchResult.data.filter(item => {
-                    const matchesSource = sourceSiteList.some(source => item.source.toLowerCase().includes(source));
-                    const isBaseSourceExcluded = !item.source.toLowerCase().includes(baseSource.toLowerCase());
+        //             return matchesSource && isBaseSourceExcluded;
+        //         });
+        //     }
+        //     let additionalDataWithGoogleLens = [];
+        //     if (googleLensSearchResult.status) {
+        //         additionalData = googleLensSearchResult.data.filter(item => {
+        //             const matchesSource = sourceSiteList.some(source => item.source.toLowerCase().includes(source));
+        //             const isBaseSourceExcluded = !item.source.toLowerCase().includes(baseSource.toLowerCase());
 
-                    return matchesSource && isBaseSourceExcluded;
-                });
-            }
-            if (additionalDataWithDescription.length)
-                filteredData = filteredData.concat(additionalDataWithDescription);
-            if (additionalDataWithGoogleLens.length)
-                filteredData = filteredData.concat(additionalDataWithGoogleLens);
+        //             return matchesSource && isBaseSourceExcluded;
+        //         });
+        //     }
+        //     if (additionalDataWithDescription.length)
+        //         filteredData = filteredData.concat(additionalDataWithDescription);
+        //     if (additionalDataWithGoogleLens.length)
+        //         filteredData = filteredData.concat(additionalDataWithGoogleLens);
 
-            restData = googleSearchResult.data.filter(item =>
-                !sourceSiteList.some(source => item.source.toLowerCase().includes(source))
-            );
+        //     restData = googleSearchResult.data.filter(item =>
+        //         !sourceSiteList.some(source => item.source.toLowerCase().includes(source))
+        //     );
 
-            const sortedFilteredData = filteredData.sort((a, b) => {
-                const aIndex = sourceSiteList.findIndex(source => a.source.toLowerCase().includes(source));
-                const bIndex = sourceSiteList.findIndex(source => b.source.toLowerCase().includes(source));
-                return aIndex - bIndex;
-            });
+        //     const sortedFilteredData = filteredData.sort((a, b) => {
+        //         const aIndex = sourceSiteList.findIndex(source => a.source.toLowerCase().includes(source));
+        //         const bIndex = sourceSiteList.findIndex(source => b.source.toLowerCase().includes(source));
+        //         return aIndex - bIndex;
+        //     });
 
-            const uniqueSourceData = [];
-            const seenSources = new Set();
-            sortedFilteredData.forEach(item => {
-                const matchedSource = sourceSiteList.find(source => item.source.toLowerCase().includes(source));
+        //     const uniqueSourceData = [];
+        //     const seenSources = new Set();
+        //     sortedFilteredData.forEach(item => {
+        //         const matchedSource = sourceSiteList.find(source => item.source.toLowerCase().includes(source));
 
-                if (matchedSource && !seenSources.has(matchedSource)) {
-                    seenSources.add(matchedSource);
-                    uniqueSourceData.push(item);
-                }
-            });
-            for (let index = 0; index < uniqueSourceData.length; index++) {
-                const item = uniqueSourceData[index];
-                const data = await getScrapedData(item.link, filterOptions, ipAddress);
-                scrapedData.push(data)
-            }
-        }
+        //         if (matchedSource && !seenSources.has(matchedSource)) {
+        //             seenSources.add(matchedSource);
+        //             uniqueSourceData.push(item);
+        //         }
+        //     });
+        //     for (let index = 0; index < uniqueSourceData.length; index++) {
+        //         const item = uniqueSourceData[index];
+        //         const data = await getScrapedData(item.link, filterOptions, ipAddress);
+        //         scrapedData.push(data)
+        //     }
+        // }
         scrapedData.push(scrapedBaseData);
         scrapedData = scrapedData.reduce((acc, item) => {
             if (item) {
