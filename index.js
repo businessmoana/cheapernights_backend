@@ -133,6 +133,7 @@ const handleGoogleSearch = async (req, res) => {
             status: 'false'
         };
     }
+    console.log("End of scrapper")
     res.json(returnData);
 }
 
