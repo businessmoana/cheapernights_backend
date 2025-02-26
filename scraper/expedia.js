@@ -27,14 +27,14 @@ const extractImagesUrl = async (page) => {
 const extractPrice = async (page, selector1, selector2) => {
     let total = '';
     try {
-        await retrySelector(page, selector1);
+        // await retrySelector(page, selector1);
         const priceElement1 = await page.$(selector1);
 
         if (priceElement1) {
             total = await page.$eval(selector1, (e) => e.innerText);
         }
 
-        await retrySelector(page, selector2);
+        // await retrySelector(page, selector2);
         const priceElement2 = await page.$(selector2);
         if (priceElement2) {
             total = await page.$eval(selector2, (e) => e.innerText);
