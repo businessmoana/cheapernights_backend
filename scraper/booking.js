@@ -75,7 +75,7 @@ const extractPrice = async (page, selector) => {
         return {total:total, perNight:''};
     } catch (e) {
         console.error(`Error extracting price:`, e.message);
-        return '';
+        return {total:'', perNight:''};
     }
 };
 

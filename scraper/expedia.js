@@ -42,7 +42,7 @@ const extractPrice = async (page, selector1, selector2) => {
         return {total:total, perNight:''};
     } catch (e) {
         console.error('Error extracting Price url:', e.message);
-        return [];
+        return {total:'', perNight:''};
     }
 };
 
@@ -74,7 +74,7 @@ const extractReviews = async (page) => {
         return { aggregate_score: rating.match(/(\d+(\.\d+)?)/)[0], total_reviews: review.match(/(\d+)/)[0], type: 10 };
     } catch (e) {
         console.error('Error extracting reviews:', e.message);
-        return {};
+        return { aggregate_score: 0, total_reviews: 0, type: 10 };;
     }
 };
 

@@ -47,7 +47,7 @@ const extractPrice = async (page) => {
         return { total: total, perNight: perNight.replace(" per night", "") };
     } catch (e) {
         console.error('Error extracting description:', e.message);
-        return [];
+        return {total:'', perNight:''};
     }
 };
 
@@ -89,7 +89,7 @@ const extractReviews = async (page) => {
         return { aggregate_score: rating.match(/(\d+(\.\d+)?)/)[0], total_reviews: review.match(/(\d+)/)[0], type: 10 };
     } catch (e) {
         console.error('Error extracting reviews:', e.message);
-        return {};
+        return {aggregate_score:0, total_reviews:0, type:10};
     }
 };
 

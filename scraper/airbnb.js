@@ -4,7 +4,7 @@ const sleep = require('../utils/sleep');
 const retrySelector = async (page, selector, retries = 3) => {
     for (let i = 0; i < retries; i++) {
         try {
-            return await page.waitForSelector(selector, { timeout: 5000 });
+            return await page.waitForSelector(selector, { timeout: 1000 });
         } catch (e) {
             console.error(e);
             await sleep(1000);
@@ -43,7 +43,7 @@ const extractPrice = async (page, selector) => {
         return {total:total, perNight:perNight};
     } catch (e) {
         console.error('Error extracting Price:', e.message);
-        return [];
+        return {total:'', perNight:''};
     }
 };
 
@@ -106,7 +106,8 @@ const extractReviews = async (page) => {
         return { aggregate_score: rating.match(/(\d+(\.\d+)?)/)[0], total_reviews: review.match(/(\d+)/)[0], type:5 };
     } catch (e) {
         console.error('Error extracting reviews:', e.message);
-        return {};
+        return { aggregate_score: 0, total_reviews: 0, type:5 };
+
     }
 };
 
