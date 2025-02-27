@@ -3,6 +3,7 @@ const cors = require('cors');
 const nodemailer = require('nodemailer');
 const handleGoogleLensSearch = require('./src/handleGoogleLensSearch');
 const handleGoogleSearch = require('./src/handleGoogleSearch');
+const generateEmailTemplate = require('./src/emailTemplate');
 require('dotenv').config();
 
 const app = express();
@@ -35,8 +36,7 @@ app.post('/send-mail', function (req, res) {
         to: 'info@cheapernights.com',
         subject: 'Contact Form Message',
         from: "info@cheapernights.com",
-        html:  "From: " + req.body.firstName + req.body.lastName + "<br>" +
-               "User's email: " + req.body.email + "<br>" +     "Message: " + req.body.message
+        html: generateEmailTemplate(req.body.firstName, req.body.lastName, req.body.email, req.body.message)
     }
     smtpTransport.sendMail(mailOptions, function (err, response) {
         if (err) {
