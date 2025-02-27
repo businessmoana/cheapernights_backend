@@ -12,7 +12,7 @@ app.use(cors());
 app.use(express.json());
 
 let smtpTransport = nodemailer.createTransport({
-    host: 'smtp.cheapernights.com', 
+    host: 'mail.privateemail.com', 
     port: 587, // Port for TLS
     secure: false, // Set to true if using port 465
     auth: {
