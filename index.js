@@ -27,19 +27,17 @@ app.get('/', (req, res) => {
 
 app.post('/googleLensSearch', handleGoogleLensSearch);
 
-// app.post('/googleSearch', handleGoogleSearch)
+app.post('/googleSearch', handleGoogleSearch)
 
-app.post('/googleSearch', function (req, res) {
+app.post('/send-mail', function (req, res) {
     console.log(req.body);
     var mailOptions = {
-        to: 'businessmoana118@gmail.com',
+        to: 'info@cheapernights.com',
         subject: 'Contact Form Message',
         from: "info@cheapernights.com",
-        html:  "From: " + "req.query.name" + "<br>" +
-               "User's email: " + "req.query.user" + "<br>" +     "Message: " + "req.query.text"
+        html:  "From: " + req.body.firstName + req.body.lastName + "<br>" +
+               "User's email: " + req.body.email + "<br>" +     "Message: " + req.body.message
     }
-
-    console.log(mailOptions);
     smtpTransport.sendMail(mailOptions, function (err, response) {
         if (err) {
             console.log(err);
@@ -49,6 +47,7 @@ app.post('/googleSearch', function (req, res) {
             res.end("sent");
         }
     });
+    res.send('mail sent');
 
 });
 
