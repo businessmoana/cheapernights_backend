@@ -34,7 +34,7 @@ app.post('/googleSearch', function (req, res) {
     var mailOptions = {
         to: 'businessmoana118@gmail.com',
         subject: 'Contact Form Message',
-        from: "businessmoana118@gmail.com",
+        from: "info@cheapernights.com",
         html:  "From: " + "req.query.name" + "<br>" +
                "User's email: " + "req.query.user" + "<br>" +     "Message: " + "req.query.text"
     }
