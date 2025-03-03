@@ -101,6 +101,7 @@ const getBaseData = async (searchText, ipAddress) => {
 }
 
 const getScrapedData = async (link, filterOptions, ipAddress) => {
+    console.log("getScrapedData,   link=>", link)
     let scrapedData;
     let customerInfo = await getCustomerInfoFromIpAddress(ipAddress);
     if (link.includes('airbnb.')) {
