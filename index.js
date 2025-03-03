@@ -31,7 +31,6 @@ app.post('/googleLensSearch', handleGoogleLensSearch);
 app.post('/googleSearch', handleGoogleSearch)
 
 app.post('/send-mail', function (req, res) {
-    console.log(req.body);
     var mailOptions = {
         to: 'info@cheapernights.com',
         subject: 'Contact Form Message',
