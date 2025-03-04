@@ -50,6 +50,8 @@ app.post('/send-mail', function (req, res) {
 
 });
 
+app.use('/images', express.static(path.join(__dirname, 'images')));
+
 app.listen(PORT, () => {
     console.log(`server is running on port ${PORT}`);
 })
