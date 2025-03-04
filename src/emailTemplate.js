@@ -14,19 +14,19 @@ function generateEmailTemplate(firstName, lastName, email, message) {
                     <div style="margin-top: 30px;font-size: 14px;line-height: 25px;">
                         <div>
                             <span style="font-weight:600">First Name:</span>
-                            <span style="">${user.firstName}</span>
+                            <span style="">${firstName}</span>
                         </div>
                         <div>
                             <span style="font-weight:600">Last Name:</span>
-                            <span style="">${user.lastName}</span>
+                            <span style="">${lastName}</span>
                         </div>
                         <div>
                             <span style="font-weight:600">Email:</span>
-                            <span style="">${user.email}</span>
+                            <span style="">${email}</span>
                         </div>
                         
                         <div style="font-weight:600">Message:</div>
-                        <div>${user.message}</div>
+                        <div>${message}</div>
                     </div>
                     <div style="margin-top: 60px; font-size: 12px;">
                         <p>&copy; 2025 CheaperNights.com. All rights reserved.</p>
