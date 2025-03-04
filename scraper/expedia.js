@@ -1,5 +1,6 @@
 const puppeteer = require('puppeteer');
 const sleep = require('../utils/sleep');
+const { prefix } = require('../utils/prefixForAffiliate');
 
 const retrySelector = async (page, selector, retries = 3) => {
     for (let i = 0; i < retries; i++) {
@@ -39,10 +40,10 @@ const extractPrice = async (page, selector1, selector2) => {
         if (priceElement2) {
             total = await page.$eval(selector2, (e) => e.innerText);
         }
-        return {total:total, perNight:''};
+        return { total: total, perNight: '' };
     } catch (e) {
         console.error('Error extracting Price url:', e.message);
-        return {total:'', perNight:''};
+        return { total: '', perNight: '' };
     }
 };
 
@@ -103,6 +104,8 @@ const scraperSourceExpedia = async (_url) => {
         page.setDefaultNavigationTimeout(0);
         await page.goto(_url, { waitUntil: 'networkidle2' });
 
+        const decodedUrl = decodeURIComponent(_url);
+
         const json = {
             source: 'Expedia',
             name: await extractTitle(page, 'div[data-stid*="content-hotel-title"] h1'),
@@ -111,7 +114,7 @@ const scraperSourceExpedia = async (_url) => {
             address: await extractAddress(page),
             image_urls: await extractImagesUrl(page),
             price: await extractPrice(page, 'div[data-stid="section-room-list"] div div:nth-child(1) div[data-test-id="price-summary-message-line"]:nth-child(2) div div div', 'div[data-stid="price-summary-card"] table tr td:nth-child(2) h2'),
-            link: _url
+            link: `${prefix['booking']}${decodedUrl}`,
         };
 
         return { result: json, error: null };

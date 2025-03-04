@@ -1,5 +1,6 @@
 const puppeteer = require('puppeteer');
 const sleep = require('../utils/sleep');
+const { prefix } = require('../utils/prefixForAffiliate');
 
 const retrySelector = async (page, selector, retries = 3) => {
     for (let i = 0; i < retries; i++) {
@@ -47,7 +48,7 @@ const extractPrice = async (page) => {
         return { total: total, perNight: perNight.replace(" per night", "") };
     } catch (e) {
         console.error('Error extracting description:', e.message);
-        return {total:'', perNight:''};
+        return { total: '', perNight: '' };
     }
 };
 
@@ -89,7 +90,7 @@ const extractReviews = async (page) => {
         return { aggregate_score: rating.match(/(\d+(\.\d+)?)/)[0], total_reviews: review.match(/(\d+)/)[0], type: 10 };
     } catch (e) {
         console.error('Error extracting reviews:', e.message);
-        return {aggregate_score:0, total_reviews:0, type:10};
+        return { aggregate_score: 0, total_reviews: 0, type: 10 };
     }
 };
 
@@ -122,6 +123,8 @@ const scraperSourceVrbo = async (_url) => {
         // Go to the target URL
         await page.goto(_url, { waitUntil: 'networkidle2' });
 
+        const decodedUrl = decodeURIComponent(_url);
+
         const json = {
             source: 'Vrbo',
             name: await extractTitle(page, 'div[data-stid*="content-hotel-title"] h1'),
@@ -130,7 +133,8 @@ const scraperSourceVrbo = async (_url) => {
             image_urls: await extractImagesUrl(page),
             price: await extractPrice(page),
             description: await extractDescription(page, 'div[data-stid="content-markup"]'),
-            link: _url
+            link: `${prefix['booking']}${decodedUrl}`,
+
         };
 
         return { result: json, error: null };

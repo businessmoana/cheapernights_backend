@@ -1,5 +1,6 @@
 const puppeteer = require('puppeteer');
 const sleep = require('../utils/sleep');
+const { prefix } = require('../utils/prefixForAffiliate');
 
 const retrySelector = async (page, selector, retries = 3) => {
     for (let i = 0; i < retries; i++) {
@@ -52,7 +53,7 @@ const extractJson = async (page) => {
             reviews: {
                 aggregate_score: data.aggregateRating.ratingValue || 0,
                 total_reviews: data.aggregateRating.reviewCount || 0,
-                type:10
+                type: 10
             },
         };
     } catch (e) {
@@ -69,13 +70,13 @@ const extractPrice = async (page, selector) => {
             const element = document.querySelector(selector);
             return element ? element.outerHTML : null; // Return outer HTML
         }, selector);
-        if(elementHTML){
-            total =  await page.$eval(selector, (e) => e.innerText);
+        if (elementHTML) {
+            total = await page.$eval(selector, (e) => e.innerText);
         }
-        return {total:total, perNight:''};
+        return { total: total, perNight: '' };
     } catch (e) {
         console.error(`Error extracting price:`, e.message);
-        return {total:'', perNight:''};
+        return { total: '', perNight: '' };
     }
 };
 
@@ -93,6 +94,9 @@ const scraperSourceBooking = async (_url) => {
         await page.setViewport({ width: 1600, height: 1000 });
         page.setDefaultNavigationTimeout(0);
         await page.goto(_url, { waitUntil: 'networkidle2' });
+
+        const decodedUrl = decodeURIComponent(_url);
+
         const json = {
             ...(await extractJson(page)),
             price: await extractPrice(
@@ -100,8 +104,8 @@ const scraperSourceBooking = async (_url) => {
                 'table#hprt-table tr:nth-child(1) td.hprt-table-cell-price div div.bui-price-display div.bui-price-display__value span:nth-child(1)',
             ),
             image_urls: await extractImagesUrl(page, 'div#photo_wrapper img'),
-            description:await extractDescription(page, 'div[data-testid="host-profile"] > div div:nth-child(2) div:nth-child(1)'),
-            link: _url
+            description: await extractDescription(page, 'div[data-testid="host-profile"] > div div:nth-child(2) div:nth-child(1)'),
+            link: `${prefix['booking']}${decodedUrl}`,
 
         };
 

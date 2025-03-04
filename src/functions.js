@@ -14,7 +14,7 @@ const getBaseData = async (searchText, ipAddress) => {
     let filterOptions;
     let returnData;
     let customerInfo = await getCustomerInfoFromIpAddress(ipAddress);
-
+    console.log("searchText=>", searchText);
     const searchUrl = new URL(searchText);
     if (searchText.includes('airbnb.')) {
         baseSource = 'airbnb';
