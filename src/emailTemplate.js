@@ -1,28 +1,38 @@
+
+
 function generateEmailTemplate(firstName, lastName, email, message) {
     return `
         <html>
-        <head>
-            <style>
-                body { font-family: Arial, sans-serif; }
-                .container { padding: 20px; }
-                .header { font-size: 20px; font-weight: bold; }
-                .content { margin-top: 10px; }
-                .footer { margin-top: 20px; font-size: 12px; color: #888; }
-            </style>
-        </head>
-        <body>
-            <div class="container">
-                <div class="header">Contact Form Message</div>
-                <div class="content">
-                    <p><strong>From:</strong> ${firstName} ${lastName}</p>
-                    <p><strong>User's email:</strong> ${email}</p>
-                    <p><strong>Message:</strong> ${message}</p>
+            <head>
+            </head>
+            <body>
+                <div style="font-family: Arial, sans-serif;max-width: 600px;margin: auto;padding: 20px;border: 1px solid #ddd;border-radius: 5px;text-align:center;color:#57606F;align-items: center;">
+                    <img src="images/logo.png" alt="Logo Image" style="width: 210px; height: auto;">
+                    <div style="font-size: 24px; font-weight:600; margin-top:60px">Notification Title</div>
+                    <p style="font-size:14px; padding-top:5px">A new message has been received from a user on CheaperNights.com.<br>Please review the details below:
+                    </p>
+                    <div style="margin-top: 30px;font-size: 14px;line-height: 25px;">
+                        <div>
+                            <span style="font-weight:600">First Name:</span>
+                            <span style="">${user.firstName}</span>
+                        </div>
+                        <div>
+                            <span style="font-weight:600">Last Name:</span>
+                            <span style="">${user.lastName}</span>
+                        </div>
+                        <div>
+                            <span style="font-weight:600">Email:</span>
+                            <span style="">${user.email}</span>
+                        </div>
+                        
+                        <div style="font-weight:600">Message:</div>
+                        <div>${user.message}</div>
+                    </div>
+                    <div style="margin-top: 60px; font-size: 12px;">
+                        <p>&copy; 2025 CheaperNights.com. All rights reserved.</p>
+                    </div>
                 </div>
-                <div class="footer">
-                    <p>This email was sent from the contact form on your website.</p>
-                </div>
-            </div>
-        </body>
+            </body>
         </html>
     `;
 }
