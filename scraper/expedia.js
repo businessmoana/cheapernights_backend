@@ -114,8 +114,8 @@ const scraperSourceExpedia = async (_url) => {
             address: await extractAddress(page),
             image_urls: await extractImagesUrl(page),
             price: await extractPrice(page, 'div[data-stid="section-room-list"] div div:nth-child(1) div[data-test-id="price-summary-message-line"]:nth-child(2) div div div', 'div[data-stid="price-summary-card"] table tr td:nth-child(2) h2'),
-            href: `${prefix['booking']}${decodedUrl}`,
-            link: _url
+            link: `${prefix['booking']}${decodedUrl}`,
+
         };
 
         return { result: json, error: null };

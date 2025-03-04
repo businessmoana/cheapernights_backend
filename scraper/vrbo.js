@@ -133,9 +133,7 @@ const scraperSourceVrbo = async (_url) => {
             image_urls: await extractImagesUrl(page),
             price: await extractPrice(page),
             description: await extractDescription(page, 'div[data-stid="content-markup"]'),
-            href: `${prefix['booking']}${decodedUrl}`,
-            link: _url,
-
+            link: `${prefix['booking']}${decodedUrl}`,
         };
 
         return { result: json, error: null };
