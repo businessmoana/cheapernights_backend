@@ -105,7 +105,8 @@ const scraperSourceBooking = async (_url) => {
             ),
             image_urls: await extractImagesUrl(page, 'div#photo_wrapper img'),
             description: await extractDescription(page, 'div[data-testid="host-profile"] > div div:nth-child(2) div:nth-child(1)'),
-            link: `${prefix['booking']}${decodedUrl}`,
+            href: `${prefix['booking']}${decodedUrl}`,
+            link : _url
 
         };
 
