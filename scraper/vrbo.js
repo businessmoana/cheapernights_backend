@@ -1,6 +1,6 @@
 const puppeteer = require('puppeteer');
 const sleep = require('../utils/sleep');
-const { prefix } = require('../utils/prefixForAffiliate');
+const prefix = require('../utils/prefixForAffiliate');
 
 const retrySelector = async (page, selector, retries = 3) => {
     for (let i = 0; i < retries; i++) {
