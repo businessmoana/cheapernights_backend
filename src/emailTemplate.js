@@ -49,7 +49,7 @@ function generateEmailTemplate(firstName, lastName, email, message) {
                         <td colspan="2" style="text-align:center">${message}</td>
                     </tr>
                     <tr>
-                        <td colspan="2" style="margin-top: 60px; font-size: 12px; text-align:center;">
+                        <td colspan="2" style="margin-top: 60px; font-size: 12px; text-align:center; padding-top:60px">
                             <p>&copy; 2025 CheaperNights.com. All rights reserved.</p>
                         </td>
                     </tr>
