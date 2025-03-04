@@ -3,15 +3,15 @@ function generateEmailTemplate(firstName, lastName, email, message) {
         <html>
             <head>
             </head>
-            <body style="font-family: Arial, sans-serif;max-width: 600px;margin: auto;padding: 20px;border: 1px solid #ddd;border-radius: 5px;text-align:center;color:#57606F;line-height: 25px;">
-                <table>
+            <body style="font-family: Arial, sans-serif;max-width: 600px;padding: 20px;border: 1px solid #ddd;border-radius: 5px;text-align:center;color:#57606F;line-height: 25px; margin:auto;">
+                <table style="margin:auto;">
                     <tr>
                         <td colspan="2">
                             <img src="https://api.cheapernights.com/images/logo.png" alt="Logo Image" style="width: 210px; height: auto;">
                         </td>
                     </tr>
                     <tr>
-                        <td colspan="2" style="font-size: 24px; font-weight:600; padding-top:60px">Notification Title</td>
+                        <td colspan="2" style="font-size: 24px; font-weight:600; padding-top:60px; align-text:center">Notification Title</td>
                     </tr>
                     <tr>
                         <td colspan="2" style="font-size:14px; padding-top:5px">
