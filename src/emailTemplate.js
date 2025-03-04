@@ -19,12 +19,20 @@ function generateEmailTemplate(firstName, lastName, email, message) {
                         </td>
                     </tr>
                     <tr style="padding-top: 30px;">
-                        <td style="font-weight:600; text-align: right; padding-right: 10px; padding-top:30px;">First Name:</td>
-                        <td style="text-align: left; padding-top:30px;">${firstName}</td>
+                        <td colspan="2" style="text-align:center">
+                            <p>
+                                <span style="font-weight:600;">First Name : </span>
+                                <span>${firstName}</span>
+                            </p>
+                       </td>
                     </tr>
                     <tr>
-                        <td style="font-weight:600; text-align: right; padding-right: 10px;">Last Name:</td>
-                        <td style="text-align: left;">${lastName}</td>
+                        <td colspan="2" style="text-align:center">
+                            <p>
+                                <span style="font-weight:600;">Last Name : </span>
+                                <span>${lastName}</span>
+                            </p>
+                       </td>
                     </tr>
                     <tr>
                         <td style="font-weight:600; text-align: right; padding-right: 10px; ">Email:</td>
@@ -37,7 +45,7 @@ function generateEmailTemplate(firstName, lastName, email, message) {
                         <td colspan="2" style="text-align:center">${message}</td>
                     </tr>
                     <tr>
-                        <td colspan="2" style="margin-top: 60px; font-size: 12px;">
+                        <td colspan="2" style="margin-top: 60px; font-size: 12px; text-align:center;">
                             <p>&copy; 2025 CheaperNights.com. All rights reserved.</p>
                         </td>
                     </tr>
