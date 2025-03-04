@@ -18,8 +18,8 @@ function generateEmailTemplate(firstName, lastName, email, message) {
                             A new message has been received from a user on CheaperNights.com.<br>Please review the details below:
                         </td>
                     </tr>
-                    <tr style="padding-top: 30px;">
-                        <td colspan="2" style="text-align:center">
+                    <tr>
+                        <td colspan="2" style="text-align:center; padding-top: 30px;">
                             <p>
                                 <span style="font-weight:600;">First Name : </span>
                                 <span>${firstName}</span>
@@ -35,8 +35,12 @@ function generateEmailTemplate(firstName, lastName, email, message) {
                        </td>
                     </tr>
                     <tr>
-                        <td style="font-weight:600; text-align: right; padding-right: 10px; ">Email:</td>
-                        <td style="text-align: left;">${email}</td>
+                        <td colspan="2" style="text-align:center">
+                            <p>
+                                <span style="font-weight:600;">Email : </span>
+                                <span>${email}</span>
+                            </p>
+                       </td>
                     </tr>
                     <tr>
                        <td colspan="2"  style="font-weight:600; text-align:center">Message:</td>
