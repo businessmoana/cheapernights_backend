@@ -3,15 +3,15 @@ function generateEmailTemplate(firstName, lastName, email, message) {
         <html>
             <head>
             </head>
-            <body>
-                <table style="font-family: Arial, sans-serif;max-width: 600px;margin: auto;padding: 20px;border: 1px solid #ddd;border-radius: 5px;text-align:center;color:#57606F;align-items: center;">
+            <body style="font-family: Arial, sans-serif;max-width: 600px;margin: auto;padding: 20px;border: 1px solid #ddd;border-radius: 5px;text-align:center;color:#57606F;line-height: 25px;">
+                <table>
                     <tr>
                         <td colspan="2">
                             <img src="https://api.cheapernights.com/images/logo.png" alt="Logo Image" style="width: 210px; height: auto;">
                         </td>
                     </tr>
-                    <tr style="padding-top: 60px;">
-                        <td colspan="2" style="font-size: 24px; font-weight:600; margin-top:60px">Notification Title</td>
+                    <tr>
+                        <td colspan="2" style="font-size: 24px; font-weight:600; padding-top:60px">Notification Title</td>
                     </tr>
                     <tr>
                         <td colspan="2" style="font-size:14px; padding-top:5px">
@@ -19,8 +19,8 @@ function generateEmailTemplate(firstName, lastName, email, message) {
                         </td>
                     </tr>
                     <tr style="padding-top: 30px;">
-                        <td style="font-weight:600; text-align: right; padding-right: 10px;">First Name:</td>
-                        <td style="text-align: left;">${firstName}</td>
+                        <td style="font-weight:600; text-align: right; padding-right: 10px; padding-top:30px;">First Name:</td>
+                        <td style="text-align: left; padding-top:30px;">${firstName}</td>
                     </tr>
                     <tr>
                         <td style="font-weight:600; text-align: right; padding-right: 10px;">Last Name:</td>
