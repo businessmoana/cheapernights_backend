@@ -10,7 +10,7 @@ function generateEmailTemplate(firstName, lastName, email, message) {
                             <img src="https://api.cheapernights.com/images/logo.png" alt="Logo Image" style="width: 210px; height: auto;">
                         </td>
                     </tr>
-                    <tr>
+                    <tr style="padding-top: 60px;">
                         <td colspan="2" style="font-size: 24px; font-weight:600; margin-top:60px">Notification Title</td>
                     </tr>
                     <tr>
@@ -18,21 +18,23 @@ function generateEmailTemplate(firstName, lastName, email, message) {
                             A new message has been received from a user on CheaperNights.com.<br>Please review the details below:
                         </td>
                     </tr>
-                    <tr>
+                    <tr style="padding-top: 30px;">
                         <td style="font-weight:600; text-align: right; padding-right: 10px;">First Name:</td>
-                        <td style="text-align: left;"><span>${firstName}</span></td>
+                        <td style="text-align: left;">${firstName}</td>
                     </tr>
                     <tr>
                         <td style="font-weight:600; text-align: right; padding-right: 10px;">Last Name:</td>
-                        <td style="text-align: left;"><span>${lastName}</span></td>
+                        <td style="text-align: left;">${lastName}</td>
                     </tr>
                     <tr>
                         <td style="font-weight:600; text-align: right; padding-right: 10px;">Email:</td>
-                        <td style="text-align: left;"><span>${email}</span></td>
+                        <td style="text-align: left;">${email}</td>
                     </tr>
                     <tr>
-                        <td style="font-weight:600; text-align: right; padding-right: 10px;">Message:</td>
-                        <td style="text-align: left;"><span>${message}</span></td>
+                       <td colspan="2"  style="font-weight:600;">Message:</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">${message}</td>
                     </tr>
                     <tr>
                         <td colspan="2" style="margin-top: 60px; font-size: 12px;">
