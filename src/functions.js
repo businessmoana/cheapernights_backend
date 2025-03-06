@@ -118,7 +118,7 @@ const getScrapedData = async (link, filterOptions, ipAddress) => {
         if (filterOptions.children)
             url.searchParams.append('children', filterOptions.children)
         const updatedUrl = url.toString();
-        scrapedData = await scraperSourceAirbnb(updatedUrl);
+        scrapedData = await scraperBaseSourceAirbnb(updatedUrl);
     } else if (link.includes('expedia.')) {
         const parsedUrl = new URL(link);
         const newUrl = new URL(parsedUrl);
